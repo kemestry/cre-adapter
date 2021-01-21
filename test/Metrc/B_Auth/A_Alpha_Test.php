@@ -13,28 +13,39 @@ namespace Test\B_Auth;
 
 class A_Alpha_Test extends \Test\Components\OpenTHC_Test_Case
 {
+
+	public function test_factory()
+	{
+		$cfg = [
+			'code' => $_ENV['metrc-cfg-code'],
+			'service-key' => $_ENV['metrc-cfg-service-key'],
+			'license-key' => $_ENV['metrc-license-g'],
+		];
+		$cre = \OpenTHC\CRE::factory($cfg);
+		$p1 = $cre->ping();
+		$this->assertIsArray($p1);
+		$this->assertValidResponse($p1);
+	}
+
 	public function test_auth()
 	{
-		$c = new \OpenTHC\CRE\Adapter\Metrc([
-			'server' => 'https://bunk.openthc.org/metrc',
-			'service-key' => '-',
-			'license-key' => '-',
+		$c = new \OpenTHC\CRE\Metrc([
+			'code' => $_ENV['metrc-cfg-code'],
+			'service-key' => $_ENV['metrc-cfg-service-key'],
+			'license-key' => $_ENV['metrc-license-g'],
 		]);
-		$l0 = $c->setLicense('L1');
-		$this->assertIsArray($l0);
 		$p1 = $c->ping();
-		var_dump($p1);
+		$this->assertIsArray($p1);
+		$this->assertValidResponse($p1);
 	}
 
 	public function test_open_fail()
 	{
-		$c = new \OpenTHC\CRE\Adapter\Metrc([
-			'server' => 'https://bunk.openthc.org/metrc',
+		$c = new \OpenTHC\CRE\Metrc([
+			'code' => 'garbage-data',
 			'service-key' => 'garbage-data',
 			'license-key' => 'garbage-data',
 		]);
-		$l0 = $c->setLicense('L1');
-		$this->assertIsEmpty($l0);
 		$p1 = $c->ping();
 
 		$res = $this->assertValidResponse($p1, 403);
@@ -46,9 +57,9 @@ class A_Alpha_Test extends \Test\Components\OpenTHC_Test_Case
 		// TEST COMPANY A
 		// $res = $this->_post('/auth/open', [
 		$c = new \OpenTHC\CRE\Adapter\Metrc([
-			'service-key' => $_ENV['api-service-a'],
-			// 'company-key' => $_ENV['api-company-g0'],
-			'license-key' => $_ENV['api-license-g0'],
+			'code' => $_ENV['metrc-cfg-code'],
+			'service-key' => $_ENV['metrc-cfg-service-key'],
+			'license-key' => $_ENV['metrc-license-g'],
 		]);
 
 		$p1 = $c->ping();
@@ -62,8 +73,8 @@ class A_Alpha_Test extends \Test\Components\OpenTHC_Test_Case
 	function test_open_fail_company_license()
 	{
 		$c = new \OpenTHC\CRE\Adapter\Metrc([
-			'server' => 'https://bunk.openthc.org/metrc',
-			'service-key' => $_ENV['api-service-a'],
+			'code' => $_ENV['metrc-cfg-code'],
+			'service-key' => $_ENV['metrc-cfg-service-key'],
 			'license-key' => 'garbage-data',
 		]);
 		$p1 = $c->ping();
