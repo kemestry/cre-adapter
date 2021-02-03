@@ -5,7 +5,7 @@
 
 namespace Test;
 
-class OpenTHC_LeafData_Test extends OpenTHC_Base_TestCase
+class OpenTHC_Metrc_Test extends OpenTHC_Base_TestCase
 {
 	/**
 	 * Intends to become an assert wrapper for a bunch of common response checks
@@ -35,4 +35,11 @@ class OpenTHC_LeafData_Test extends OpenTHC_Base_TestCase
 	protected function _api($opt=null)
 	{}
 
+	protected function setUp() : void
+	{
+		$f = sprintf("%s/etc/cre.ini", dirname(dirname(__FILE__)));
+		$ini = parse_ini_file($f);
+		$cfg = $ini['usa/or/test'];
+		$this->cre = \OpenTHC\CRE::factory($cfg);
+	}
 }
